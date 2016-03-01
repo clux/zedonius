@@ -1,0 +1,8 @@
+[package]
+name = "zedonius"
+version = "0.1.0"
+authors = ["Eirik Albrigtsen <analsandblaster@gmail.com>"]
+
+[dependencies]
+hiirc = "0.3.0"
+time = "0.1.34"
