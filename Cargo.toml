@@ -4,8 +4,5 @@ version = "0.1.0"
 authors = ["Eirik Albrigtsen <analsandblaster@gmail.com>"]
 
 [dependencies]
-hiirc = { git = "https://github.com/sbstp/hiirc.git", rev = "788f4a1", branch = "threadsafe" }
+hiirc = "0.4.0"
 time = "0.1.34"
-
-[blah]
-hiirc = "0.3.0"

@@ -15,6 +15,7 @@ const NICKNAME: &'static str = "zedonius";
 const USERNAME: &'static str = "hiirc";
 const REALNAME: &'static str = "Ruler of Flame";
 
+#[allow(unused_must_use)]
 impl Listener for Zedonius {
     fn any(&mut self, irc: Arc<Irc>, event: &Event) {
         println!("{:?}", event);
@@ -24,10 +25,12 @@ impl Listener for Zedonius {
         if msg.starts_with(NICKNAME) {
             self.blah += 1;
             let resp = format!("blah {}", self.blah);
-            irc.privmsg("#clux", &resp); // channel.name is private so can't actually use it atm
+            irc.privmsg(&user.nickname(), &resp);
+            irc.privmsg(channel.name(), &resp);
             thread::spawn(move || {
                 thread::sleep(std::time::Duration::from_secs(4));
-                irc.privmsg("#clux", "done");
+                irc.privmsg(channel.name(), "done");
+                irc.privmsg(&user.nickname(), "done");
             });
         }
     }
