@@ -1,6 +1,13 @@
 #![allow(unused_variables)]
 extern crate hiirc;
 extern crate time;
+
+// for the logger
+#[macro_use] extern crate log;
+extern crate ansi_term;
+
+mod logger;
+
 use std::thread;
 use std::sync::Arc;
 
@@ -8,50 +15,55 @@ use hiirc::*;
 use time::Duration;
 
 struct Zedonius {
-  blah: u32,
+    request_count: u32,
+    nickname: &'static str,
 }
-
-const NICKNAME: &'static str = "zedonius";
-const USERNAME: &'static str = "hiirc";
-const REALNAME: &'static str = "Ruler of Flame";
 
 #[allow(unused_must_use)]
 impl Listener for Zedonius {
     fn any(&mut self, irc: Arc<Irc>, event: &Event) {
-        println!("{:?}", event);
+        debug!("{:?}", event);
     }
 
-    fn channel_msg(&mut self, irc: Arc<Irc>, channel: Arc<Channel>, user: Arc<ChannelUser>, msg: &str) {
-        if msg.starts_with(NICKNAME) {
-            self.blah += 1;
-            let resp = format!("blah {}", self.blah);
-            irc.privmsg(&user.nickname(), &resp);
-            irc.privmsg(channel.name(), &resp);
+    fn channel_msg(&mut self,
+                   irc: Arc<Irc>,
+                   channel: Arc<Channel>,
+                   user: Arc<ChannelUser>,
+                   msg: &str) {
+        if msg.starts_with(self.nickname) {
+            info!("{}: {}", &user.nickname(), &msg);
+            self.request_count += 1;
+            let cpy = self.request_count;
             thread::spawn(move || {
                 thread::sleep(std::time::Duration::from_secs(4));
-                irc.privmsg(channel.name(), "done");
-                irc.privmsg(&user.nickname(), "done");
+                let resp = format!("request_count {}", cpy);
+                irc.privmsg(channel.name(), &resp);
             });
         }
     }
 
     fn reconnect(&mut self, irc: Arc<Irc>) {
-        println!("reconnect");
+        warn!("Reconnect");
     }
 
     fn welcome(&mut self, irc: Arc<Irc>) {
+        info!("Connected");
         irc.join("#clux", None);
     }
 }
 
 fn main() {
-    Settings::new("irc.freenode.net:6667", NICKNAME)
-        .username(USERNAME)
-        .realname(REALNAME)
+    // NB: will fail to start if nickname is not unique
+    let ziddy = Zedonius { nickname: "clux", request_count: 0 };
+    logger::init_with_verbosity(0).unwrap();
+    Settings::new("irc.quakenet.org:6667", &ziddy.nickname)
+        .username("ziddy")
+        .realname("Ruler of Flame")
         .reconnection(ReconnectionSettings::Reconnect {
             max_attempts: 0,
             delay_between_attempts: Duration::seconds(15),
             delay_after_disconnect: Duration::seconds(30),
         })
-        .dispatch(Zedonius{ blah: 0 }).unwrap();
+        .dispatch(ziddy)
+        .unwrap();
 }
