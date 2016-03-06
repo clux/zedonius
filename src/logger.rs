@@ -54,3 +54,19 @@ pub fn init_with_verbosity(verbosity: usize) -> Result<(), SetLoggerError> {
 pub fn init() -> Result<(), SetLoggerError> {
     init_with_level(LogLevel::Info)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::init_with_verbosity;
+
+    #[test]
+    fn init_and_macros() {
+        let l = init_with_verbosity(1);
+        assert_eq!(l.is_ok(), true);
+        error!("error log");
+        warn!("warn log");
+        info!("info log");
+        debug!("debug log");
+        trace!("trace log");
+    }
+}
