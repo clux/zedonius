@@ -1,18 +1,19 @@
 use log::{self, Log, LogLevel, LogMetadata, LogRecord, SetLoggerError};
 use std::io::{self, Write};
-use ansi_term::{Colour, Style};
+use ansi_term::Colour;
 
 struct StdioLogger {
     log_level: LogLevel,
 }
 
-fn level_style(l: LogLevel) -> Style {
+
+fn level_style(l: LogLevel) -> Colour {
     match l {
-        LogLevel::Error => Colour::Red.bold(),
-        LogLevel::Warn => Colour::Purple.bold(),
-        LogLevel::Info => Colour::White.bold(),
-        LogLevel::Debug => Colour::White.dimmed(),
-        LogLevel::Trace => Colour::White.dimmed(),
+        LogLevel::Error => Colour::Fixed(9), // bright red
+        LogLevel::Warn => Colour::Fixed(11), // bright yellow
+        LogLevel::Info => Colour::Fixed(10), // bright green
+        LogLevel::Debug => Colour::Fixed(7), // light grey
+        LogLevel::Trace => Colour::Fixed(8), // grey
     }
 }
 
@@ -51,6 +52,7 @@ pub fn init_with_verbosity(verbosity: usize) -> Result<(), SetLoggerError> {
     };
     init_with_level(level)
 }
+
 pub fn init() -> Result<(), SetLoggerError> {
     init_with_level(LogLevel::Info)
 }
@@ -61,7 +63,7 @@ mod tests {
 
     #[test]
     fn init_and_macros() {
-        let l = init_with_verbosity(1);
+        let l = init_with_verbosity(3);
         assert_eq!(l.is_ok(), true);
         error!("error log");
         warn!("warn log");
