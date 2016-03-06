@@ -1,5 +1,6 @@
 # zedonius
-[![build status](https://secure.travis-ci.org/clux/quadratic.svg)](http://travis-ci.org/clux/quadratic)
+[![build status](https://secure.travis-ci.org/clux/zedonius.svg)](http://travis-ci.org/clux/zedonius)
+
 An experimental interface to things on fire.
 
 ## Usage
