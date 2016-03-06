@@ -2,11 +2,8 @@
 extern crate hiirc;
 extern crate time;
 
-// for the logger
 #[macro_use] extern crate log;
-extern crate ansi_term;
-
-mod logger;
+extern crate loggerv;
 
 use std::thread;
 use std::sync::Arc;
@@ -54,8 +51,8 @@ impl Listener for Zedonius {
 
 fn main() {
     // NB: will fail to start if nickname is not unique
-    let ziddy = Zedonius { nickname: "clux", request_count: 0 };
-    logger::init_with_verbosity(0).unwrap();
+    let ziddy = Zedonius { nickname: "zedonius", request_count: 0 };
+    loggerv::init_with_verbosity(1).unwrap();
     Settings::new("irc.quakenet.org:6667", &ziddy.nickname)
         .username("ziddy")
         .realname("Ruler of Flame")
