@@ -1,6 +1,5 @@
 #![allow(unused_variables)]
 extern crate hiirc;
-extern crate time;
 
 #[macro_use] extern crate log;
 extern crate loggerv;
@@ -9,7 +8,7 @@ use std::thread;
 use std::sync::Arc;
 
 use hiirc::*;
-use time::Duration;
+use std::time::Duration;
 
 struct Zedonius {
     request_count: u32,
@@ -32,7 +31,7 @@ impl Listener for Zedonius {
             self.request_count += 1;
             let cpy = self.request_count;
             thread::spawn(move || {
-                thread::sleep(std::time::Duration::from_secs(4));
+                thread::sleep(Duration::from_secs(4));
                 let resp = format!("request_count {}", cpy);
                 irc.privmsg(channel.name(), &resp);
             });
@@ -58,8 +57,8 @@ fn main() {
         .realname("Ruler of Flame")
         .reconnection(ReconnectionSettings::Reconnect {
             max_attempts: 0,
-            delay_between_attempts: Duration::seconds(15),
-            delay_after_disconnect: Duration::seconds(30),
+            delay_between_attempts: Duration::from_secs(15),
+            delay_after_disconnect: Duration::from_secs(30),
         })
         .dispatch(ziddy)
         .unwrap();

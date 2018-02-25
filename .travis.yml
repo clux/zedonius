@@ -1,9 +1,7 @@
 sudo: false
 language: rust
 rust:
-  - beta
   - stable
-  - 1.7.0
 notifications:
   email:
     on_success: change

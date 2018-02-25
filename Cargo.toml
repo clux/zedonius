@@ -4,7 +4,6 @@ version = "0.1.0"
 authors = ["Eirik Albrigtsen <sszynrae@gmail.com>"]
 
 [dependencies]
-hiirc = "0.4.0"
-time = "0.1.34"
-log = "0.3.5"
-loggerv = "0.2.0"
+hiirc = "0.5.0"
+log = "0.4"
+loggerv = "0.7.0"
